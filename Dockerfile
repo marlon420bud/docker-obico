@@ -44,14 +44,12 @@ RUN \
     /tmp/libcudnn.deb -L \
     https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/libcudnn9-cuda-12_9.10.2.21-1_amd64.deb && \
   dpkg -i /tmp/libcudnn.deb && \
-  rm /tmp/libcudnn.deb && \
 
   # install CUDA 11.0 runtime (libcudart.so.11.4) for darknet GPU compatibility
   curl -o \
     /tmp/libcudart11.deb -L \
     https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/libcudnn8_8.2.4.15-1+cuda11.4_amd64.deb && \
   dpkg -i /tmp/libcudart11.deb && \
-  rm /tmp/libcudart11.deb
       
   curl -s https://bootstrap.pypa.io/get-pip.py | python3.10 && \
   pip3 install --upgrade \
