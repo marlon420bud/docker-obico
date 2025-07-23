@@ -28,6 +28,12 @@ RUN \
     curl \
     ffmpeg \
     gcc \
+    build-essential \
+    dkms \
+    curl \
+    ca-certificates \
+    gnupg \
+    wget \
     git \
     libfontconfig1 \
     libpq-dev \
@@ -37,21 +43,37 @@ RUN \
     postgresql \
     python3.10 \
     python3.10-dev \
-    python3.10-distutils && \
+    python3.10-distutils 
 
 # install cuDNN 9.10.2 for CUDA 12
-  curl -o \
+RUN  curl -o \
     /tmp/libcudnn.deb -L \
     https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/libcudnn9-cuda-12_9.10.2.21-1_amd64.deb && \
   dpkg -i /tmp/libcudnn.deb && \
 
-  # install CUDA 11.0 runtime (libcudart.so.11.4) for darknet GPU compatibility
+  # install cuDNN 8.2.4.15-1 runtime for darknet GPU compatibility
   curl -o \
     /tmp/libcudart11.deb -L \
     https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/libcudnn8_8.2.4.15-1+cuda11.4_amd64.deb && \
-  dpkg -i /tmp/libcudart11.deb && \
-      
-  curl -s https://bootstrap.pypa.io/get-pip.py | python3.10 && \
+  dpkg -i /tmp/libcudart11.deb 
+
+# Download CUDA 11.0 local installer
+RUN wget https://developer.download.nvidia.com/compute/cuda/11.0.3/local_installers/cuda_11.0.3_450.51.06_linux.run -O /tmp/cuda_11.0.run
+
+# Make it executable and install CUDA 11.0 silently (accept EULA, no driver)
+RUN chmod +x /tmp/cuda_11.0.run && \
+    /tmp/cuda_11.0.run --silent --toolkit --override && \
+    rm /tmp/cuda_11.0.run
+
+# Setup environment variables
+ENV PATH=/usr/local/cuda-11.0/bin:${PATH}
+ENV LD_LIBRARY_PATH=/usr/local/cuda-11.0/lib64:${LD_LIBRARY_PATH}
+
+# Verify CUDA installation (optional; can be removed in production)
+RUN nvcc --version
+
+
+RUN  curl -s https://bootstrap.pypa.io/get-pip.py | python3.10 && \
   pip3 install --upgrade \
     packaging \
     pip \
