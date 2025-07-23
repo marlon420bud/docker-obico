@@ -181,8 +181,14 @@ Instructions for updating containers:
 * Recreate a new container with the same docker run parameters as instructed above (if mapped correctly to a host folder, your `/config` folder and settings will be preserved)
 * You can also remove the old dangling images: `docker image prune`
 
+
+
+### Note
+* The included Nvidia runtime is extremely large next steps are to reducing as far as possible.
+
 ## Versions
 
+* **23.07.25:** - Included complete Nvidia runtime for enabling darknet gpu detections
 * **09.01.25:** - improve HOST_IP instructions
 * **29.09.23:** - precompile darknet
 * **29.06.23:** - create seperate cuda branch
